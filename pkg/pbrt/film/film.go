@@ -3,7 +3,7 @@ package film
 import (
 	"image"
 	"image/color"
-	"pbrt/pkg/vec"
+	"pbrt/pkg/pbrt/vec"
 )
 
 type Film struct {

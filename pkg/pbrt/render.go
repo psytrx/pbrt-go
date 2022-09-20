@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/rand"
 	"pbrt/pkg/pbrt/film"
-	"pbrt/pkg/vec"
+	"pbrt/pkg/pbrt/vec"
 )
 
 type RenderOptions struct {
