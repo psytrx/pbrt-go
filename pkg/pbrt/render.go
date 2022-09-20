@@ -15,12 +15,14 @@ type RenderOptions struct {
 func Render(options RenderOptions) film.Film {
 	f := film.New(options.Width, options.Height)
 
+	rng := rand.New(rand.NewSource(42))
+
 	for x := 0; x < options.Width; x++ {
 		for y := 0; y < options.Height; y++ {
 			sum := vec.Zero()
 			for s := 0; s < options.SamplesPerPixel; s++ {
-				i := (float64(x) + rand.Float64()) / float64(options.Width)
-				j := (float64(y) + rand.Float64()) / float64(options.Height)
+				i := (float64(x) + rng.Float64()) / float64(options.Width)
+				j := (float64(y) + rng.Float64()) / float64(options.Height)
 
 				color := pixelColor(i, j)
 				sum = sum.Add(color)
