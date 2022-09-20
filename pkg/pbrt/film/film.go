@@ -23,8 +23,8 @@ func (f Film) Set(x, y int, color vec.Vec) {
 
 func (f Film) ImageRGBA() *image.RGBA {
 	img := image.NewRGBA(image.Rect(0, 0, f.width, f.height))
-	for x := 0; x < f.width; x++ {
-		for y := 0; y < f.height; y++ {
+	for y := 0; y < f.height; y++ {
+		for x := 0; x < f.width; x++ {
 			idx := y*f.width + x
 			px := f.px[idx]
 			ir := uint8(255 * clamp(px.X, 0, 1))
