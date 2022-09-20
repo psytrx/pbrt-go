@@ -11,17 +11,24 @@ import (
 	"time"
 )
 
-func main() {
-	cpuProf, err := os.Create("./cpu.prof")
-	if err != nil {
-		log.Fatalf("could not create CPU profile: %s", err)
-	}
-	defer cpuProf.Close()
+const (
+	CPU_PROFILE = true
+	MEM_PROFILE = true
+)
 
-	if err := pprof.StartCPUProfile(cpuProf); err != nil {
-		log.Fatalf("could not start CPU profile: %s", err)
+func main() {
+	if CPU_PROFILE {
+		cpuProf, err := os.Create("./cpu.prof")
+		if err != nil {
+			log.Fatalf("could not create CPU profile: %s", err)
+		}
+		defer cpuProf.Close()
+
+		if err := pprof.StartCPUProfile(cpuProf); err != nil {
+			log.Fatalf("could not start CPU profile: %s", err)
+		}
+		defer pprof.StopCPUProfile()
 	}
-	defer pprof.StopCPUProfile()
 
 	options := pbrt.RenderOptions{
 		Width:           800,
@@ -37,17 +44,18 @@ func main() {
 
 	writeFilm(film)
 
-	memProf, err := os.Create("./mem.prof")
-	if err != nil {
-		log.Fatal("could not create memory profile: ", err)
-	}
-	defer memProf.Close()
+	if MEM_PROFILE {
+		memProf, err := os.Create("./mem.prof")
+		if err != nil {
+			log.Fatal("could not create memory profile: ", err)
+		}
+		defer memProf.Close()
 
-	runtime.GC()
-	if err := pprof.WriteHeapProfile(memProf); err != nil {
-		log.Fatal("could not write memory profile: ", err)
+		runtime.GC()
+		if err := pprof.WriteHeapProfile(memProf); err != nil {
+			log.Fatal("could not write memory profile: ", err)
+		}
 	}
-
 }
 
 func writeFilm(film film.Film) {
