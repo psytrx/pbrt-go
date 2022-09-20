@@ -6,10 +6,23 @@ import (
 	"os"
 	"pbrt/pkg/pbrt"
 	"pbrt/pkg/pbrt/film"
+	"runtime"
+	"runtime/pprof"
 	"time"
 )
 
 func main() {
+	cpuProf, err := os.Create("./cpu.prof")
+	if err != nil {
+		log.Fatalf("could not create CPU profile: %s", err)
+	}
+	defer cpuProf.Close()
+
+	if err := pprof.StartCPUProfile(cpuProf); err != nil {
+		log.Fatalf("could not start CPU profile: %s", err)
+	}
+	defer pprof.StopCPUProfile()
+
 	options := pbrt.RenderOptions{
 		Width:           800,
 		Height:          450,
@@ -23,6 +36,18 @@ func main() {
 	log.Printf("render finished in %v", d)
 
 	writeFilm(film)
+
+	memProf, err := os.Create("./mem.prof")
+	if err != nil {
+		log.Fatal("could not create memory profile: ", err)
+	}
+	defer memProf.Close()
+
+	runtime.GC()
+	if err := pprof.WriteHeapProfile(memProf); err != nil {
+		log.Fatal("could not write memory profile: ", err)
+	}
+
 }
 
 func writeFilm(film film.Film) {
