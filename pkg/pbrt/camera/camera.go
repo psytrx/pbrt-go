@@ -1,4 +1,4 @@
-package cam
+package camera
 
 import (
 	"math"
@@ -17,14 +17,14 @@ type Camera struct {
 func New(
 	lookFrom, lookAt vec.Vec,
 	vDown vec.Vec,
-	vFov float64,
+	fov float64,
 	aspectRatio float64,
 	aperture, focusDist float64,
 ) Camera {
-	theta := degToRad(vFov)
-	h := math.Tan(theta / 2)
-	viewportHeight := 2 * h
-	viewportWidth := aspectRatio * viewportHeight
+	theta := degToRad(fov)
+	halfWidth := math.Tan(theta / 2)
+	viewportWidth := 2 * halfWidth
+	viewportHeight := viewportWidth / aspectRatio
 
 	w := lookFrom.Sub(lookAt).Normalized()
 	u := vec.Cross(vDown, w).Normalized()

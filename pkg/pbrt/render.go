@@ -3,7 +3,7 @@ package pbrt
 import (
 	"math"
 	"math/rand"
-	cam "pbrt/pkg/pbrt/camera"
+	"pbrt/pkg/pbrt/camera"
 	"pbrt/pkg/pbrt/film"
 	"pbrt/pkg/pbrt/ray"
 	"pbrt/pkg/pbrt/surface"
@@ -19,7 +19,7 @@ func Render(options RenderOptions) film.Film {
 	f := film.New(options.Width, options.Height)
 
 	aspectRatio := float64(options.Width) / float64(options.Height)
-	c := cam.New(
+	cam := camera.New(
 		vec.New(0, 1, -8),
 		vec.New(0, 1, 0),
 		vec.New(0, -1, 0),
@@ -36,7 +36,7 @@ func Render(options RenderOptions) film.Film {
 				u := (float64(x) + rng.Float64()) / float64(options.Width)
 				v := (float64(y) + rng.Float64()) / float64(options.Height)
 
-				r := c.Ray(u, v)
+				r := cam.Ray(u, v)
 
 				color := pixelColor(r)
 				sum = sum.Add(color)
