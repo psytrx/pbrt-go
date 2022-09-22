@@ -5,7 +5,9 @@ import (
 	"log"
 	"os"
 	"pbrt/pkg/pbrt"
+	"pbrt/pkg/pbrt/camera"
 	"pbrt/pkg/pbrt/film"
+	"pbrt/pkg/pbrt/vec"
 	"time"
 )
 
@@ -19,11 +21,26 @@ func start() {
 		Height:          450,
 		SamplesPerPixel: 32,
 	}
+	aspectRatio := float64(options.Width) / float64(options.Height)
+
+	lookFrom := vec.New(0, 1, -8)
+	lookAt := vec.New(0, 1, 0)
+	focusDist := lookAt.Sub(lookFrom).Len()
+
+	scene := pbrt.Scene{
+		Camera: camera.New(
+			lookFrom, lookAt,
+			vec.New(0, -1, 0),
+			30,
+			aspectRatio,
+			0.01, focusDist,
+		),
+	}
 
 	log.Println("starting render")
 
 	t0 := time.Now()
-	film := pbrt.Render(options)
+	film := pbrt.Render(options, scene)
 	d := time.Since(t0)
 
 	log.Printf("finished render in %v", d)

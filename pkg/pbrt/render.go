@@ -3,7 +3,6 @@ package pbrt
 import (
 	"math"
 	"math/rand"
-	"pbrt/pkg/pbrt/camera"
 	"pbrt/pkg/pbrt/film"
 	"pbrt/pkg/pbrt/ray"
 	"pbrt/pkg/pbrt/surface"
@@ -15,18 +14,9 @@ type RenderOptions struct {
 	SamplesPerPixel int
 }
 
-func Render(options RenderOptions) film.Film {
+func Render(options RenderOptions, scene Scene) film.Film {
 	f := film.New(options.Width, options.Height)
 
-	aspectRatio := float64(options.Width) / float64(options.Height)
-	cam := camera.New(
-		vec.New(0, 1, -8),
-		vec.New(0, 1, 0),
-		vec.New(0, -1, 0),
-		30,
-		aspectRatio,
-		0.1, 4,
-	)
 	rng := rand.New(rand.NewSource(42))
 
 	for y := 0; y < options.Height; y++ {
@@ -36,7 +26,7 @@ func Render(options RenderOptions) film.Film {
 				u := (float64(x) + rng.Float64()) / float64(options.Width)
 				v := (float64(y) + rng.Float64()) / float64(options.Height)
 
-				r := cam.Ray(u, v, rng)
+				r := scene.Camera.Ray(u, v, rng)
 
 				color := pixelColor(r)
 				sum = sum.Add(color)
