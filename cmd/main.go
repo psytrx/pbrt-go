@@ -8,13 +8,13 @@ import (
 )
 
 const (
-	CPU_PROFILE = true
-	MEM_PROFILE = true
+	CPU_PROFILE = "./cpu.prof"
+	MEM_PROFILE = "./mem.prof"
 )
 
 func main() {
-	if CPU_PROFILE {
-		cpuProf, err := os.Create("./cpu.prof")
+	if CPU_PROFILE != "" {
+		cpuProf, err := os.Create(CPU_PROFILE)
 		if err != nil {
 			log.Fatalf("could not create CPU profile: %s", err)
 		}
@@ -28,8 +28,8 @@ func main() {
 
 	start()
 
-	if MEM_PROFILE {
-		memProf, err := os.Create("./mem.prof")
+	if MEM_PROFILE != "" {
+		memProf, err := os.Create(MEM_PROFILE)
 		if err != nil {
 			log.Fatal("could not create memory profile: ", err)
 		}
