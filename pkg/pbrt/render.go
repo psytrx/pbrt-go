@@ -25,7 +25,7 @@ func Render(options RenderOptions) film.Film {
 		vec.New(0, -1, 0),
 		30,
 		aspectRatio,
-		0, 4,
+		0.1, 4,
 	)
 	rng := rand.New(rand.NewSource(42))
 
@@ -36,7 +36,7 @@ func Render(options RenderOptions) film.Film {
 				u := (float64(x) + rng.Float64()) / float64(options.Width)
 				v := (float64(y) + rng.Float64()) / float64(options.Height)
 
-				r := cam.Ray(u, v)
+				r := cam.Ray(u, v, rng)
 
 				color := pixelColor(r)
 				sum = sum.Add(color)
