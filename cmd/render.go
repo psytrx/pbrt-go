@@ -36,7 +36,10 @@ func start() {
 			aspectRatio,
 			0.01, focusDist,
 		),
-		World: surface.NewSphere(vec.New(0, 1, 0), 1),
+		World: surface.NewList(
+			surface.NewSphere(vec.New(0, 1, 0), 1),
+			surface.NewSphere(vec.New(0, -999, 0), 999),
+		),
 	}
 
 	log.Println("starting render")
