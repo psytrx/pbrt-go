@@ -24,8 +24,8 @@ func start() {
 	}
 	aspectRatio := float64(options.Width) / float64(options.Height)
 
-	lookFrom := vec.New(0, 1, -8)
-	lookAt := vec.New(0, 1, 0)
+	lookFrom := vec.New(0, 2, -6)
+	lookAt := vec.New(0, 0.5, 0)
 	focusDist := lookAt.Sub(lookFrom).Len()
 
 	scene := pbrt.Scene{
@@ -38,6 +38,8 @@ func start() {
 		),
 		World: surface.NewList(
 			surface.NewSphere(vec.New(0, 1, 0), 1),
+			surface.NewSphere(vec.New(-2, 1, 0), 1),
+			surface.NewSphere(vec.New(2, 1, 0), 1),
 			surface.NewSphere(vec.New(0, -999, 0), 999),
 		),
 	}
