@@ -45,8 +45,8 @@ func Render(options RenderOptions, scene Scene, seed int64) film.Film {
 }
 
 func pixelColor(r ray.Ray, world surface.Surface) vec.Vec {
-	if ok, _ := world.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
-		return vec.New(1, 0, 1)
+	if ok, isect := world.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
+		return isect.Normal.Add(vec.One()).Scaled(0.5)
 	}
 
 	// background

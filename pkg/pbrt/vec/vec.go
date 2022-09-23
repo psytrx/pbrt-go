@@ -49,3 +49,7 @@ func Cross(u, v Vec) Vec {
 func Zero() Vec {
 	return Vec{0, 0, 0}
 }
+
+func One() Vec {
+	return Vec{1, 1, 1}
+}
