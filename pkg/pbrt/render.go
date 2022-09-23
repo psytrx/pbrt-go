@@ -12,30 +12,39 @@ import (
 type RenderOptions struct {
 	Width, Height   int
 	SamplesPerPixel int
+	MaxDepth        int
 }
 
-func Render(options RenderOptions, scene Scene, seed int64) film.Film {
-	f := film.New(options.Width, options.Height)
+type Renderer struct {
+	options RenderOptions
+}
+
+func NewRenderer(options RenderOptions) Renderer {
+	return Renderer{options}
+}
+
+func (rnd Renderer) Render(scene Scene, seed int64) film.Film {
+	f := film.New(rnd.options.Width, rnd.options.Height)
 
 	rng := rand.New(rand.NewSource(seed))
 
-	for y := 0; y < options.Height; y++ {
-		for x := 0; x < options.Width; x++ {
+	for y := 0; y < rnd.options.Height; y++ {
+		for x := 0; x < rnd.options.Width; x++ {
 			sum := vec.Zero()
-			for s := 0; s < options.SamplesPerPixel; s++ {
-				u := (float64(x) + rng.Float64()) / float64(options.Width)
-				v := (float64(y) + rng.Float64()) / float64(options.Height)
+			for s := 0; s < rnd.options.SamplesPerPixel; s++ {
+				u := (float64(x) + rng.Float64()) / float64(rnd.options.Width)
+				v := (float64(y) + rng.Float64()) / float64(rnd.options.Height)
 
-				r := scene.Camera.Ray(u, v, rng)
+				ray := scene.Camera.Ray(u, v, rng)
 
-				color := rayColor(r, scene.World, 16, rng)
+				color := rnd.rayColor(ray, scene.World, 0, rng)
 				sum = sum.Add(color)
 			}
 
 			gammaCorrected := vec.New(
-				math.Sqrt(sum.X/float64(options.SamplesPerPixel)),
-				math.Sqrt(sum.Y/float64(options.SamplesPerPixel)),
-				math.Sqrt(sum.Z/float64(options.SamplesPerPixel)),
+				math.Sqrt(sum.X/float64(rnd.options.SamplesPerPixel)),
+				math.Sqrt(sum.Y/float64(rnd.options.SamplesPerPixel)),
+				math.Sqrt(sum.Z/float64(rnd.options.SamplesPerPixel)),
 			)
 			f.Set(x, y, gammaCorrected)
 		}
@@ -44,15 +53,15 @@ func Render(options RenderOptions, scene Scene, seed int64) film.Film {
 	return f
 }
 
-func rayColor(r ray.Ray, world surface.Surface, depth int, rng *rand.Rand) vec.Vec {
-	if depth <= 0 {
+func (rnd Renderer) rayColor(r ray.Ray, world surface.Surface, depth int, rng *rand.Rand) vec.Vec {
+	if depth >= rnd.options.MaxDepth {
 		return vec.Zero()
 	}
 
 	if ok, isect := world.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
 		direction := isect.Normal.Add(vec.RandomInUnitSphere(rng))
 		scattered := ray.New(isect.P, direction)
-		return rayColor(scattered, world, depth-1, rng).Scaled(0.5)
+		return rnd.rayColor(scattered, world, depth-1, rng).Scaled(0.5)
 	}
 
 	// background

@@ -21,6 +21,7 @@ func start() {
 		Width:           800,
 		Height:          450,
 		SamplesPerPixel: 32,
+		MaxDepth:        16,
 	}
 	aspectRatio := float64(options.Width) / float64(options.Height)
 
@@ -46,8 +47,9 @@ func start() {
 
 	log.Println("starting render")
 
+	rnd := pbrt.NewRenderer(options)
 	t0 := time.Now()
-	film := pbrt.Render(options, scene, 0)
+	film := rnd.Render(scene, 0)
 	d := time.Since(t0)
 
 	log.Printf("finished render in %v", d)
