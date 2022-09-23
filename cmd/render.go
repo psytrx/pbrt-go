@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"pbrt/pkg/pbrt"
+	"pbrt/pkg/pbrt/background"
 	"pbrt/pkg/pbrt/camera"
 	"pbrt/pkg/pbrt/film"
 	"pbrt/pkg/pbrt/surface"
@@ -20,7 +21,7 @@ func start() {
 	options := pbrt.RenderOptions{
 		Width:           800,
 		Height:          450,
-		SamplesPerPixel: 32,
+		SamplesPerPixel: 8,
 		MinDepth:        5,
 	}
 	aspectRatio := float64(options.Width) / float64(options.Height)
@@ -36,6 +37,10 @@ func start() {
 			60,
 			aspectRatio,
 			0.01, focusDist,
+		),
+		Background: background.NewLinearGradient(
+			vec.New(0.82, 0.55, 0.24),
+			vec.New(0.24, 0.45, 0.72),
 		),
 		World: surface.NewList(
 			surface.NewSphere(vec.New(0, 1, 0), 1),

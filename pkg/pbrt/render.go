@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"pbrt/pkg/pbrt/film"
 	"pbrt/pkg/pbrt/ray"
-	"pbrt/pkg/pbrt/surface"
 	"pbrt/pkg/pbrt/vec"
 )
 
@@ -37,7 +36,7 @@ func (rnd Renderer) Render(scene Scene, seed int64) film.Film {
 
 				ray := scene.Camera.Ray(u, v, rng)
 
-				color := rnd.rayColor(ray, scene.World, 0, rng)
+				color := rnd.rayColor(ray, scene, 0, rng)
 				sum = sum.Add(color)
 			}
 
@@ -53,7 +52,7 @@ func (rnd Renderer) Render(scene Scene, seed int64) film.Film {
 	return f
 }
 
-func (rnd Renderer) rayColor(r ray.Ray, world surface.Surface, depth int, rng *rand.Rand) vec.Vec {
+func (rnd Renderer) rayColor(r ray.Ray, scene Scene, depth int, rng *rand.Rand) vec.Vec {
 	rrFactor := 1.0
 	if depth >= rnd.options.MinDepth {
 		rrStopProp := 0.1
@@ -63,14 +62,11 @@ func (rnd Renderer) rayColor(r ray.Ray, world surface.Surface, depth int, rng *r
 		rrFactor = 1.0 / (1.0 - rrStopProp)
 	}
 
-	if ok, isect := world.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
+	if ok, isect := scene.World.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
 		direction := isect.Normal.Add(vec.RandomInUnitSphere(rng))
 		scattered := ray.New(isect.P, direction)
-		return rnd.rayColor(scattered, world, depth+1, rng).Scaled(rrFactor * 0.5)
+		return rnd.rayColor(scattered, scene, depth+1, rng).Scaled(rrFactor * 0.5)
 	}
 
-	// background
-	unitDirection := r.Direction.Normalized()
-	t := (unitDirection.Y + 1) / 2
-	return vec.New(0.82, 0.55, 0.24).Scaled(1 - t).Add(vec.New(0.46, 0.56, 0.66).Scaled(t))
+	return scene.Background.RayColor(r)
 }
