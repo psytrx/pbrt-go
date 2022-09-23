@@ -61,7 +61,7 @@ func (rnd Renderer) rayColor(r ray.Ray, world surface.Surface, depth int, rng *r
 	if ok, isect := world.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
 		direction := isect.Normal.Add(vec.RandomInUnitSphere(rng))
 		scattered := ray.New(isect.P, direction)
-		return rnd.rayColor(scattered, world, depth-1, rng).Scaled(0.5)
+		return rnd.rayColor(scattered, world, depth+1, rng).Scaled(0.5)
 	}
 
 	// background
