@@ -12,7 +12,7 @@ import (
 type RenderOptions struct {
 	Width, Height   int
 	SamplesPerPixel int
-	MaxDepth        int
+	MinDepth        int
 }
 
 type Renderer struct {
@@ -54,14 +54,19 @@ func (rnd Renderer) Render(scene Scene, seed int64) film.Film {
 }
 
 func (rnd Renderer) rayColor(r ray.Ray, world surface.Surface, depth int, rng *rand.Rand) vec.Vec {
-	if depth >= rnd.options.MaxDepth {
-		return vec.Zero()
+	rrFactor := 1.0
+	if depth >= rnd.options.MinDepth {
+		rrStopProp := 0.1
+		if rng.Float64() <= rrStopProp {
+			return vec.Zero()
+		}
+		rrFactor = 1.0 / (1.0 - rrStopProp)
 	}
 
 	if ok, isect := world.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
 		direction := isect.Normal.Add(vec.RandomInUnitSphere(rng))
 		scattered := ray.New(isect.P, direction)
-		return rnd.rayColor(scattered, world, depth+1, rng).Scaled(0.5)
+		return rnd.rayColor(scattered, world, depth+1, rng).Scaled(rrFactor * 0.5)
 	}
 
 	// background

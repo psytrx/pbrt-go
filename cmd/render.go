@@ -21,7 +21,7 @@ func start() {
 		Width:           800,
 		Height:          450,
 		SamplesPerPixel: 32,
-		MaxDepth:        16,
+		MinDepth:        5,
 	}
 	aspectRatio := float64(options.Width) / float64(options.Height)
 
