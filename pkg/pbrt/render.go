@@ -14,10 +14,10 @@ type RenderOptions struct {
 	SamplesPerPixel int
 }
 
-func Render(options RenderOptions, scene Scene) film.Film {
+func Render(options RenderOptions, scene Scene, seed int64) film.Film {
 	f := film.New(options.Width, options.Height)
 
-	rng := rand.New(rand.NewSource(42))
+	rng := rand.New(rand.NewSource(seed))
 
 	for y := 0; y < options.Height; y++ {
 		for x := 0; x < options.Width; x++ {

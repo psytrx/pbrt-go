@@ -40,7 +40,7 @@ func start() {
 	log.Println("starting render")
 
 	t0 := time.Now()
-	film := pbrt.Render(options, scene)
+	film := pbrt.Render(options, scene, 0)
 	d := time.Since(t0)
 
 	log.Printf("finished render in %v", d)
