@@ -7,6 +7,7 @@ import (
 	"pbrt/pkg/pbrt"
 	"pbrt/pkg/pbrt/camera"
 	"pbrt/pkg/pbrt/film"
+	"pbrt/pkg/pbrt/surface"
 	"pbrt/pkg/pbrt/vec"
 	"time"
 )
@@ -31,10 +32,11 @@ func start() {
 		Camera: camera.New(
 			lookFrom, lookAt,
 			vec.New(0, -1, 0),
-			30,
+			60,
 			aspectRatio,
 			0.01, focusDist,
 		),
+		World: surface.NewSphere(vec.New(0, 1, 0), 1),
 	}
 
 	log.Println("starting render")

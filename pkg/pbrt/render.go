@@ -28,7 +28,7 @@ func Render(options RenderOptions, scene Scene, seed int64) film.Film {
 
 				r := scene.Camera.Ray(u, v, rng)
 
-				color := pixelColor(r)
+				color := pixelColor(r, scene.World)
 				sum = sum.Add(color)
 			}
 
@@ -44,13 +44,13 @@ func Render(options RenderOptions, scene Scene, seed int64) film.Film {
 	return f
 }
 
-func pixelColor(r ray.Ray) vec.Vec {
-	s := surface.NewSphere(vec.New(0, 1, 0), 1)
-	if t := s.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); t != nil {
+func pixelColor(r ray.Ray, world surface.Surface) vec.Vec {
+	if ok, _ := world.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
 		return vec.New(1, 0, 1)
 	}
 
+	// background
 	unitDirection := r.Direction.Normalized()
 	t := (unitDirection.Y + 1) / 2
-	return vec.New(1, 1, 1).Scaled(1 - t).Add(vec.New(0.5, 0.7, 1).Scaled(t))
+	return vec.New(0.82, 0.55, 0.24).Scaled(1 - t).Add(vec.New(0.46, 0.56, 0.66).Scaled(t))
 }

@@ -15,7 +15,7 @@ func NewSphere(center vec.Vec, radius float64) Sphere {
 	return Sphere{center, radius}
 }
 
-func (s Sphere) Intersect(r ray.Ray, tMin, tMax float64) *float64 {
+func (s Sphere) Intersect(r ray.Ray, tMin, tMax float64) (bool, *Intersection) {
 	oc := r.Origin.Sub(s.center)
 	a := r.Direction.LenSqr()
 	halfB := vec.Dot(oc, r.Direction)
@@ -23,7 +23,7 @@ func (s Sphere) Intersect(r ray.Ray, tMin, tMax float64) *float64 {
 
 	d := halfB*halfB - a*c
 	if d < 0 {
-		return nil
+		return false, nil
 	}
 	sqrtD := math.Sqrt(d)
 
@@ -31,9 +31,14 @@ func (s Sphere) Intersect(r ray.Ray, tMin, tMax float64) *float64 {
 	if root < tMin || root > tMax {
 		root = (-halfB + sqrtD) / a
 		if root < tMin || root > tMax {
-			return nil
+			return false, nil
 		}
 	}
 
-	return &root
+	t := root
+	p := r.At(t)
+	outwardNormal := p.Sub(s.center).Scaled(1 / s.radius)
+	isect := NewIntersection(r, t, p, outwardNormal)
+
+	return true, &isect
 }
