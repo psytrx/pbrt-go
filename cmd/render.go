@@ -5,6 +5,7 @@ import (
 	"image/jpeg"
 	"log"
 	"os"
+	"runtime"
 	"time"
 
 	"pbrt/cmd/scenes"
@@ -27,20 +28,30 @@ func start() {
 	log.Println("loading scene")
 	scene := scenes.NewSpheres(aspectRatio)
 
-	rnd := pbrt.NewRenderer(options)
+	rnd := pbrt.NewMultipass(options)
 
 	log.Println("starting render")
+	numPasses := runtime.NumCPU()
+
 	t0 := time.Now()
-	film := rnd.Render(scene, 0)
+	passes := rnd.Render(scene, numPasses)
+
+	// consume passes and dump merged result to file
+	n := 0
+	for pass := range passes {
+		n++
+		if n%runtime.NumCPU() == 0 {
+			if OUTPUT_FILENAME != "" {
+				log.Printf("finished pass %d, writing film to file '%s'", n, OUTPUT_FILENAME)
+				img := pass.ImageRGBA(options.SamplesPerPixel)
+				writeImage(img, OUTPUT_FILENAME)
+			}
+		}
+	}
 	d := time.Since(t0)
 
-	log.Printf("finished render in %v", d)
-
-	if OUTPUT_FILENAME != "" {
-		log.Printf("writing film to file '%s'", OUTPUT_FILENAME)
-		img := film.ImageRGBA(options.SamplesPerPixel)
-		writeImage(img, OUTPUT_FILENAME)
-	}
+	log.Printf("finished %d passes in %v", numPasses, d)
+	log.Printf("%v / pass", d/time.Duration(numPasses))
 }
 
 func writeImage(img *image.RGBA, filename string) {

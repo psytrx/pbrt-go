@@ -47,6 +47,23 @@ func (f Film) ImageRGBA(samplesPerPixel int) *image.RGBA {
 	return img
 }
 
+func (f Film) Add(g Film, n int) Film {
+	avg := NewFilm(f.width, f.height)
+	for y := 0; y < f.height; y++ {
+		for x := 0; x < f.width; x++ {
+			fp := f.Get(x, y)
+			gp := g.Get(x, y)
+
+			sumP := fp.Add(gp)
+			f.Set(x, y, sumP)
+			avgP := sumP.Scaled(1.0 / float64(n))
+
+			avg.Set(x, y, avgP)
+		}
+	}
+	return avg
+}
+
 func clamp(v, min, max float64) float64 {
 	if v < min {
 		return min
