@@ -41,12 +41,7 @@ func (rnd Renderer) Render(scene Scene, seed int64) film.Film {
 				sum = sum.Add(color)
 			}
 
-			gammaCorrected := vec.New(
-				math.Sqrt(sum.X/float64(rnd.options.SamplesPerPixel)),
-				math.Sqrt(sum.Y/float64(rnd.options.SamplesPerPixel)),
-				math.Sqrt(sum.Z/float64(rnd.options.SamplesPerPixel)),
-			)
-			f.Set(x, y, gammaCorrected)
+			f.Set(x, y, sum.Scaled(1.0/float64(rnd.options.SamplesPerPixel)))
 		}
 	}
 
@@ -64,7 +59,8 @@ func (rnd Renderer) rayColor(r ray.Ray, scene Scene, depth int, rng *rand.Rand) 
 	}
 
 	if ok, isect := scene.World.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
-		direction := isect.Normal.Add(vec.RandomInUnitSphere(rng))
+		// direction := isect.Normal.Add(vec.RandomInUnitSphere(rng))
+		direction := vec.RandomInHemisphere(isect.Normal, rng)
 		scattered := ray.New(isect.P, direction)
 		return rnd.rayColor(scattered, scene, depth+1, rng).Scaled(rrFactor * 0.5)
 	}

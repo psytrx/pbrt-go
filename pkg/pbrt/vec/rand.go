@@ -39,3 +39,12 @@ func RandomInUnitSphere(rng *rand.Rand) Vec {
 		return p
 	}
 }
+
+func RandomInHemisphere(normal Vec, rng *rand.Rand) Vec {
+	inUnitSphere := RandomInUnitSphere(rng)
+	if Dot(inUnitSphere, normal) > 0 {
+		return inUnitSphere
+	} else {
+		return inUnitSphere.Scaled(-1)
+	}
+}
