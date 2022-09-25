@@ -10,10 +10,10 @@ func NewSpheres(aspectRatio float64) pbrt.Scene {
 	lookAt := vec.New(0, 0.5, 0)
 	focusDist := lookAt.Sub(lookFrom).Len()
 
-	white := pbrt.NewLambertian(vec.New(1, 1, 1))
-	red := pbrt.NewLambertian(vec.New(1, 0, 0))
-	green := pbrt.NewLambertian(vec.New(0, 1, 0))
-	blue := pbrt.NewLambertian(vec.New(0, 0, 1))
+	whiteLamb := pbrt.NewLambertian(vec.New(1, 1, 1))
+	redMetal := pbrt.NewMetal(vec.New(1, 0, 0), 0)
+	greenLamb := pbrt.NewLambertian(vec.New(0, 1, 0))
+	blueMetal := pbrt.NewMetal(vec.New(0, 0, 1), 0.8)
 
 	scene := pbrt.Scene{
 		Camera: pbrt.NewCamera(
@@ -28,10 +28,10 @@ func NewSpheres(aspectRatio float64) pbrt.Scene {
 			vec.New(0.24, 0.45, 0.72),
 		),
 		World: pbrt.NewList(
-			pbrt.NewSphere(vec.New(0, -999, 0), 999, white),
-			pbrt.NewSphere(vec.New(-2, 1, 0), 1, red),
-			pbrt.NewSphere(vec.New(0, 1, 0), 1, green),
-			pbrt.NewSphere(vec.New(2, 1, 0), 1, blue),
+			pbrt.NewSphere(vec.New(0, -999, 0), 999, whiteLamb),
+			pbrt.NewSphere(vec.New(-2, 1, 0), 1, redMetal),
+			pbrt.NewSphere(vec.New(0, 1, 0), 1, greenLamb),
+			pbrt.NewSphere(vec.New(2, 1, 0), 1, blueMetal),
 		),
 	}
 

@@ -50,6 +50,17 @@ func Cross(u, v Vec) Vec {
 	}
 }
 
+func Reflect(v, n Vec) Vec {
+	return v.Sub(n.Scaled(2 * Dot(v, n)))
+}
+
+func Refract(uv, n Vec, etaiOverEtat float64) Vec {
+	cosTheta := math.Min(1, Dot(uv.Scaled(-1), n))
+	rOutPerp := uv.Add(n.Scaled(cosTheta)).Scaled(etaiOverEtat)
+	rOutParallel := n.Scaled(-math.Sqrt(math.Abs(1 - rOutPerp.LenSqr())))
+	return rOutPerp.Add(rOutParallel)
+}
+
 func Zero() Vec {
 	return Vec{0, 0, 0}
 }
