@@ -16,7 +16,7 @@ func NewSphere(center vec.Vec, radius float64, material Material) Sphere {
 	return Sphere{center, radius, material}
 }
 
-func (s Sphere) Intersect(r Ray, tMin, tMax float64) (bool, *Intersection) {
+func (s Sphere) Intersect(r *Ray, tMin, tMax float64) (bool, *Intersection) {
 	oc := r.Origin.Sub(s.center)
 	a := r.Direction.LenSqr()
 	halfB := vec.Dot(oc, r.Direction)

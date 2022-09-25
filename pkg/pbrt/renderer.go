@@ -35,7 +35,7 @@ func (rnd Renderer) Render(scene Scene, seed int64) Film {
 
 				ray := scene.Camera.Ray(u, v, rng)
 
-				color := rnd.rayColor(ray, scene, 0, rng)
+				color := rnd.rayColor(&ray, scene, 0, rng)
 				sum = sum.Add(color)
 			}
 
@@ -46,7 +46,7 @@ func (rnd Renderer) Render(scene Scene, seed int64) Film {
 	return f
 }
 
-func (rnd Renderer) rayColor(r Ray, scene Scene, depth int, rng *rand.Rand) vec.Vec {
+func (rnd Renderer) rayColor(r *Ray, scene Scene, depth int, rng *rand.Rand) vec.Vec {
 	rrFactor := 1.0
 	if depth >= rnd.options.MinDepth {
 		rrStopProp := 0.1
@@ -58,8 +58,8 @@ func (rnd Renderer) rayColor(r Ray, scene Scene, depth int, rng *rand.Rand) vec.
 
 	if ok, isect := scene.World.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
 		// TODO: pass isect as ref?
-		if ok, attenuation, scattered := isect.Material.Scatter(r, *isect, rng); ok {
-			rayColor := rnd.rayColor(*scattered, scene, depth+1, rng)
+		if ok, attenuation, scattered := isect.Material.Scatter(r, isect, rng); ok {
+			rayColor := rnd.rayColor(scattered, scene, depth+1, rng)
 			return attenuation.Mult(rayColor).Scaled(rrFactor)
 		}
 

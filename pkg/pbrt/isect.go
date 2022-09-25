@@ -11,7 +11,7 @@ type Intersection struct {
 	Material Material
 }
 
-func NewIsect(r Ray, t float64, p, outwardNormal vec.Vec, mat Material) Intersection {
+func NewIsect(r *Ray, t float64, p, outwardNormal vec.Vec, mat Material) Intersection {
 	frontFace := vec.Dot(r.Direction, outwardNormal) < 0
 	if !frontFace {
 		outwardNormal = outwardNormal.Scaled(-1)

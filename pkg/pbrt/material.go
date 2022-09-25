@@ -7,5 +7,5 @@ import (
 )
 
 type Material interface {
-	Scatter(r Ray, isect Intersection, rng *rand.Rand) (bool, *vec.Vec, *Ray)
+	Scatter(r *Ray, isect *Intersection, rng *rand.Rand) (bool, *vec.Vec, *Ray)
 }
