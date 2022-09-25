@@ -26,7 +26,7 @@ func start() {
 	aspectRatio := float64(options.Width) / float64(options.Height)
 
 	log.Println("loading scene")
-	scene := scenes.NewSpheres(aspectRatio)
+	scene := scenes.NewManySpheres(aspectRatio)
 
 	rnd := pbrt.NewMultipass(options)
 	numPasses := 4 * runtime.NumCPU()

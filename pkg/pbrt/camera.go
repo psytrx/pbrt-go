@@ -54,7 +54,7 @@ func (c Camera) Ray(s, t float64, rng *rand.Rand) Ray {
 	rd := vec.RandomInUnitDisk(rng).Scaled(c.lensRadius)
 	offset := c.u.Scaled(rd.X).Add(c.v.Scaled(rd.Y))
 	return NewRay(
-		c.origin,
+		c.origin.Add(offset),
 		c.topLeftCorner.
 			Add(c.horizontal.Scaled(s)).
 			Add(c.vertical.Scaled(t)).
