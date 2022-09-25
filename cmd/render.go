@@ -29,7 +29,7 @@ func start() {
 	scene := scenes.NewSpheres(aspectRatio)
 
 	rnd := pbrt.NewMultipass(options)
-	numPasses := 100 * runtime.NumCPU()
+	numPasses := 4 * runtime.NumCPU()
 
 	log.Println("starting render")
 	t0 := time.Now()
