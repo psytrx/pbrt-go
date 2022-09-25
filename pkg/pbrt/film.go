@@ -1,4 +1,4 @@
-package film
+package pbrt
 
 import (
 	"image"
@@ -13,7 +13,7 @@ type Film struct {
 	px            []vec.Vec
 }
 
-func New(width, height int) Film {
+func NewFilm(width, height int) Film {
 	px := make([]vec.Vec, width*height)
 	return Film{width, height, px}
 }

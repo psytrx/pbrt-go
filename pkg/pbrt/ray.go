@@ -1,4 +1,4 @@
-package ray
+package pbrt
 
 import "pbrt/pkg/pbrt/vec"
 
@@ -6,7 +6,7 @@ type Ray struct {
 	Origin, Direction vec.Vec
 }
 
-func New(origin, direction vec.Vec) Ray {
+func NewRay(origin, direction vec.Vec) Ray {
 	return Ray{origin, direction.Normalized()}
 }
 

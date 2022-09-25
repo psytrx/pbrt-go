@@ -1,22 +1,22 @@
-package surface
+package pbrt
 
 import (
 	"math"
 
-	"pbrt/pkg/pbrt/ray"
 	"pbrt/pkg/pbrt/vec"
 )
 
 type Sphere struct {
-	center vec.Vec
-	radius float64
+	center   vec.Vec
+	radius   float64
+	material Material
 }
 
-func NewSphere(center vec.Vec, radius float64) Sphere {
-	return Sphere{center, radius}
+func NewSphere(center vec.Vec, radius float64, material Material) Sphere {
+	return Sphere{center, radius, material}
 }
 
-func (s Sphere) Intersect(r ray.Ray, tMin, tMax float64) (bool, *Intersection) {
+func (s Sphere) Intersect(r Ray, tMin, tMax float64) (bool, *Intersection) {
 	oc := r.Origin.Sub(s.center)
 	a := r.Direction.LenSqr()
 	halfB := vec.Dot(oc, r.Direction)
@@ -39,7 +39,7 @@ func (s Sphere) Intersect(r ray.Ray, tMin, tMax float64) (bool, *Intersection) {
 	t := root
 	p := r.At(t)
 	outwardNormal := p.Sub(s.center).Scaled(1 / s.radius)
-	isect := NewIntersection(r, t, p, outwardNormal)
+	isect := NewIsect(r, t, p, outwardNormal)
 
 	return true, &isect
 }

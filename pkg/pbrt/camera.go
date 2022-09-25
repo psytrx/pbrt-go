@@ -1,10 +1,9 @@
-package camera
+package pbrt
 
 import (
 	"math"
 	"math/rand"
 
-	"pbrt/pkg/pbrt/ray"
 	"pbrt/pkg/pbrt/vec"
 )
 
@@ -16,7 +15,7 @@ type Camera struct {
 	lensRadius           float64
 }
 
-func New(
+func NewCamera(
 	lookFrom, lookAt vec.Vec,
 	vDown vec.Vec,
 	fov float64,
@@ -51,10 +50,10 @@ func New(
 	}
 }
 
-func (c Camera) Ray(s, t float64, rng *rand.Rand) ray.Ray {
+func (c Camera) Ray(s, t float64, rng *rand.Rand) Ray {
 	rd := vec.RandomInUnitDisk(rng).Scaled(c.lensRadius)
 	offset := c.u.Scaled(rd.X).Add(c.v.Scaled(rd.Y))
-	return ray.New(
+	return NewRay(
 		c.origin,
 		c.topLeftCorner.
 			Add(c.horizontal.Scaled(s)).

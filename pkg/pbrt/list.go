@@ -1,6 +1,4 @@
-package surface
-
-import "pbrt/pkg/pbrt/ray"
+package pbrt
 
 type SurfaceList []Surface
 
@@ -8,7 +6,7 @@ func NewList(surfaces ...Surface) SurfaceList {
 	return SurfaceList(surfaces)
 }
 
-func (xs SurfaceList) Intersect(r ray.Ray, tMin, tMax float64) (bool, *Intersection) {
+func (xs SurfaceList) Intersect(r Ray, tMin, tMax float64) (bool, *Intersection) {
 	hitAnything := false
 	closestT := tMax
 	var closest *Intersection
