@@ -2,6 +2,7 @@ package surface
 
 import (
 	"math"
+
 	"pbrt/pkg/pbrt/ray"
 	"pbrt/pkg/pbrt/vec"
 )

@@ -3,6 +3,7 @@ package film
 import (
 	"image"
 	"image/color"
+
 	"pbrt/pkg/pbrt/vec"
 )
 

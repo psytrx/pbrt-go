@@ -3,6 +3,7 @@ package camera
 import (
 	"math"
 	"math/rand"
+
 	"pbrt/pkg/pbrt/ray"
 	"pbrt/pkg/pbrt/vec"
 )
