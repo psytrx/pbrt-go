@@ -7,7 +7,7 @@ type Ray struct {
 }
 
 func New(origin, direction vec.Vec) Ray {
-	return Ray{origin, direction}
+	return Ray{origin, direction.Normalized()}
 }
 
 func (ray Ray) At(t float64) vec.Vec {
