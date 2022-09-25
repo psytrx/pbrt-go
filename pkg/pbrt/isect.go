@@ -5,10 +5,11 @@ import (
 )
 
 type Intersection struct {
-	T        float64
-	P        vec.Vec
-	Normal   vec.Vec
-	Material Material
+	T         float64
+	P         vec.Vec
+	Normal    vec.Vec
+	FrontFace bool
+	Material  Material
 }
 
 func NewIsect(r *Ray, t float64, p, outwardNormal vec.Vec, mat Material) Intersection {
@@ -18,9 +19,10 @@ func NewIsect(r *Ray, t float64, p, outwardNormal vec.Vec, mat Material) Interse
 	}
 
 	return Intersection{
-		T:        t,
-		P:        p,
-		Normal:   outwardNormal,
-		Material: mat,
+		T:         t,
+		P:         p,
+		Normal:    outwardNormal,
+		FrontFace: frontFace,
+		Material:  mat,
 	}
 }
