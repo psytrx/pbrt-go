@@ -57,10 +57,13 @@ func (rnd Renderer) rayColor(r Ray, scene Scene, depth int, rng *rand.Rand) vec.
 	}
 
 	if ok, isect := scene.World.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); ok {
-		// direction := isect.Normal.Add(vec.RandomInUnitSphere(rng))
-		direction := vec.RandomInHemisphere(isect.Normal, rng)
-		scattered := NewRay(isect.P, direction)
-		return rnd.rayColor(scattered, scene, depth+1, rng).Scaled(rrFactor * 0.5)
+		// TODO: pass isect as ref?
+		if ok, attenuation, scattered := isect.Material.Scatter(r, *isect, rng); ok {
+			rayColor := rnd.rayColor(*scattered, scene, depth+1, rng)
+			return attenuation.Mult(rayColor).Scaled(rrFactor)
+		}
+
+		return vec.Zero()
 	}
 
 	return scene.Background.RayColor(r)

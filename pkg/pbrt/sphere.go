@@ -39,7 +39,7 @@ func (s Sphere) Intersect(r Ray, tMin, tMax float64) (bool, *Intersection) {
 	t := root
 	p := r.At(t)
 	outwardNormal := p.Sub(s.center).Scaled(1 / s.radius)
-	isect := NewIsect(r, t, p, outwardNormal)
+	isect := NewIsect(r, t, p, outwardNormal, s.material)
 
 	return true, &isect
 }

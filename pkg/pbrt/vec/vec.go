@@ -34,6 +34,10 @@ func (v Vec) Normalized() Vec {
 	return v.Scaled(1 / v.Len())
 }
 
+func (v Vec) Mult(w Vec) Vec {
+	return Vec{v.X * w.X, v.Y * w.Y, v.Z * w.Z}
+}
+
 func Dot(u, v Vec) float64 {
 	return u.X*v.X + u.Y*v.Y + u.Z*v.Z
 }
