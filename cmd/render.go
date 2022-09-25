@@ -20,7 +20,7 @@ func start() {
 	options := pbrt.RenderOptions{
 		Width:           800,
 		Height:          450,
-		SamplesPerPixel: 8,
+		SamplesPerPixel: 4,
 		MinDepth:        8,
 	}
 	aspectRatio := float64(options.Width) / float64(options.Height)
@@ -29,10 +29,9 @@ func start() {
 	scene := scenes.NewSpheres(aspectRatio)
 
 	rnd := pbrt.NewMultipass(options)
+	numPasses := 2 * runtime.NumCPU()
 
 	log.Println("starting render")
-	numPasses := runtime.NumCPU()
-
 	t0 := time.Now()
 	passes := rnd.Render(scene, numPasses)
 
@@ -43,7 +42,7 @@ func start() {
 		if n%runtime.NumCPU() == 0 {
 			if OUTPUT_FILENAME != "" {
 				log.Printf("finished pass %d, writing film to file '%s'", n, OUTPUT_FILENAME)
-				img := pass.ImageRGBA(options.SamplesPerPixel)
+				img := pass.ImageRGBA()
 				writeImage(img, OUTPUT_FILENAME)
 			}
 		}

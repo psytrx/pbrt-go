@@ -28,7 +28,7 @@ func (f Film) Get(x, y int) vec.Vec {
 	return f.px[idx]
 }
 
-func (f Film) ImageRGBA(samplesPerPixel int) *image.RGBA {
+func (f Film) ImageRGBA() *image.RGBA {
 	img := image.NewRGBA(image.Rect(0, 0, f.width, f.height))
 	for y := 0; y < f.height; y++ {
 		for x := 0; x < f.width; x++ {

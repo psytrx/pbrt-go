@@ -11,9 +11,9 @@ func NewSpheres(aspectRatio float64) pbrt.Scene {
 	focusDist := lookAt.Sub(lookFrom).Len()
 
 	whiteLamb := pbrt.NewLambertian(vec.New(1, 1, 1))
-	redMetal := pbrt.NewMetal(vec.New(1, 0, 0), 0)
+	redMetal := pbrt.NewMetal(vec.New(1, 0, 0), 0.1)
 	greenLamb := pbrt.NewLambertian(vec.New(0, 1, 0))
-	blueMetal := pbrt.NewMetal(vec.New(0, 0, 1), 0.8)
+	blueMetal := pbrt.NewMetal(vec.New(0, 0, 1), 0.5)
 
 	scene := pbrt.Scene{
 		Camera: pbrt.NewCamera(
