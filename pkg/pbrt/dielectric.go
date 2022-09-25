@@ -3,6 +3,7 @@ package pbrt
 import (
 	"math"
 	"math/rand"
+
 	"pbrt/pkg/pbrt/vec"
 )
 

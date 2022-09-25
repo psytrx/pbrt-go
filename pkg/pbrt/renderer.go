@@ -47,19 +47,17 @@ func (rnd Renderer) Render(scene Scene, seed int64) Film {
 }
 
 func (rnd Renderer) rayColor(r *Ray, scene Scene, depth int, rng *rand.Rand) vec.Vec {
-	rrFactor := 1.0
 	if depth > rnd.options.MinDepth {
 		rrStopProp := 0.1
 		if rng.Float64() < rrStopProp {
 			return vec.Zero()
 		}
-		rrFactor = 1.0 / (1.0 - rrStopProp)
 	}
 
 	if isected, isect := scene.World.Intersect(r, math.SmallestNonzeroFloat32, math.Inf(1)); isected {
 		if ok, attenuation, scattered := isect.Material.Scatter(r, isect, rng); ok {
 			rayColor := rnd.rayColor(scattered, scene, depth+1, rng)
-			return attenuation.Mult(rayColor).Scaled(rrFactor)
+			return attenuation.Mult(rayColor)
 		}
 
 		return vec.Zero()
