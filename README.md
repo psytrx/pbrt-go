@@ -8,7 +8,7 @@ Raytracing adventures in Go
 
 ## To-dos
 
-- HDR for more realistic ligh
+- HDR for more realistic lightning
 - BVH trees for faster intersection tests
   - Surface area heuristics
   - [Approximate agglomerative clustering](http://graphics.cs.cmu.edu/projects/aac/aac_build.pdf)

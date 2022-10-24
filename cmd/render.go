@@ -19,7 +19,7 @@ func start() {
 	options := pbrt.RenderOptions{
 		Width:           800,
 		Height:          500,
-		SamplesPerPixel: 2,
+		SamplesPerPixel: 4,
 		MinDepth:        8,
 	}
 	aspectRatio := float64(options.Width) / float64(options.Height)
