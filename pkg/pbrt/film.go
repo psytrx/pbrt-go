@@ -4,7 +4,6 @@ import (
 	"image"
 	"image/color"
 	"math"
-
 	"pbrt/pkg/pbrt/vec"
 )
 
@@ -67,9 +66,9 @@ func (f Film) Add(g Film, n int) Film {
 func clamp(v, min, max float64) float64 {
 	if v < min {
 		return min
-	}
-	if v > max {
+	} else if v > max {
 		return max
+	} else {
+		return v
 	}
-	return v
 }

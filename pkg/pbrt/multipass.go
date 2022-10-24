@@ -7,13 +7,14 @@ import (
 
 type MultipassRenderer struct {
 	options RenderOptions
+	rays    uint64
 }
 
 func NewMultipass(options RenderOptions) MultipassRenderer {
-	return MultipassRenderer{options}
+	return MultipassRenderer{options, 0}
 }
 
-func (rnd MultipassRenderer) Render(scene Scene, numPasses int) chan Film {
+func (rnd *MultipassRenderer) Render(scene Scene, numPasses int) chan Film {
 	p := runtime.NumCPU()
 
 	passes := make(chan Film, p)
@@ -30,6 +31,9 @@ func (rnd MultipassRenderer) Render(scene Scene, numPasses int) chan Film {
 
 				r := NewRenderer(rnd.options)
 				film := r.Render(scene, currSeed)
+
+				stats := r.Stats()
+				atomic.AddUint64(&rnd.rays, stats.Rays)
 
 				passes <- film
 			}
@@ -53,4 +57,10 @@ func (rnd MultipassRenderer) Render(scene Scene, numPasses int) chan Film {
 	}()
 
 	return merged
+}
+
+func (rnd MultipassRenderer) Stats() RenderStats {
+	return RenderStats{
+		Rays: rnd.rays,
+	}
 }

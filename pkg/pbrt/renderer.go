@@ -3,8 +3,8 @@ package pbrt
 import (
 	"math"
 	"math/rand"
-
 	"pbrt/pkg/pbrt/vec"
+	"sync/atomic"
 )
 
 type RenderOptions struct {
@@ -15,13 +15,14 @@ type RenderOptions struct {
 
 type Renderer struct {
 	options RenderOptions
+	rays    uint64
 }
 
 func NewRenderer(options RenderOptions) Renderer {
-	return Renderer{options}
+	return Renderer{options, 0}
 }
 
-func (rnd Renderer) Render(scene Scene, seed int64) Film {
+func (rnd *Renderer) Render(scene Scene, seed int64) Film {
 	f := NewFilm(rnd.options.Width, rnd.options.Height)
 
 	rng := rand.New(rand.NewSource(seed))
@@ -34,6 +35,7 @@ func (rnd Renderer) Render(scene Scene, seed int64) Film {
 				v := (float64(y) + rng.Float64()) / float64(rnd.options.Height)
 
 				ray := scene.Camera.Ray(u, v, rng)
+				atomic.AddUint64(&rnd.rays, 1)
 
 				color := rnd.rayColor(&ray, scene, 0, rng)
 				sum = sum.Add(color)
@@ -64,4 +66,10 @@ func (rnd Renderer) rayColor(r *Ray, scene Scene, depth int, rng *rand.Rand) vec
 	}
 
 	return scene.Background.RayColor(r)
+}
+
+func (rnd Renderer) Stats() RenderStats {
+	return RenderStats{
+		Rays: rnd.rays,
+	}
 }
