@@ -15,14 +15,14 @@ func NewMultipass(options RenderOptions) MultipassRenderer {
 }
 
 func (rnd *MultipassRenderer) Render(scene Scene, numPasses int) chan Film {
-	p := runtime.NumCPU()
+	nThreads := runtime.NumCPU()
 
-	passes := make(chan Film, p)
-	merged := make(chan Film, p)
+	passes := make(chan Film, nThreads)
+	merged := make(chan Film, nThreads)
 
 	// launch workers
 	seed := int64(0)
-	for i := 0; i < p; i++ {
+	for i := 0; i < nThreads; i++ {
 		go func() {
 			for seed < int64(numPasses) {
 				// fetch next seed
